@@ -1,0 +1,36 @@
+{{template "partials/header" .}}
+
+<h1>Daftar User</h1>
+<br>
+<a href="/users/create" class="btn btn-primary">Tambah User</a>
+<div>
+	<table class="table table-striped">
+		<thead>
+		  <tr>
+			<th scope="col">#</th>
+			<th scope="col">Nama User</th>
+			<th scope="col">Password</th>
+			<th scope="col">Actions</th>
+		  </tr>
+		</thead>
+		<tbody>
+			{{range .Users}}
+			<tr>
+				<th scope="row">{{.Id}}</th>
+				<td>{{.Name}}</td>
+				<td>{{.Password}}</td>
+				<td>
+					<a href="/users/userdetail?id={{.Id}}" class="btn btn-outline-info">
+						Detail</a>
+					&nbsp;
+					<a href="/users/detail/{{.Id}}" class="btn btn-outline-info">
+							Detail 2</a>
+				</td>
+			</tr>
+		  {{end}}
+		  
+		</tbody>
+	  </table>
+</div>
+
+{{template "partials/footer" .}}
