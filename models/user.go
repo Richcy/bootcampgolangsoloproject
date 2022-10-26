@@ -43,3 +43,11 @@ func DeleteUserById(db *gorm.DB, user *User, id int) (err error) {
 
 	return nil
 }
+
+func FindByUsername(db *gorm.DB, user *User, username string) (err error) {
+	err = db.Where("name=?", username).First(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

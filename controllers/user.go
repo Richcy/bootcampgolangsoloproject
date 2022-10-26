@@ -43,28 +43,34 @@ func (controller *UserController) IndexUser(c *fiber.Ctx) error {
 	})
 }
 
-// GET /user/create
+// GET /register
 func (controller *UserController) AddUser(c *fiber.Ctx) error {
-	return c.Render("adduser", fiber.Map{
+	return c.Render("register", fiber.Map{
 		"Title": "Register",
 	})
 }
 
 // POST /user/create
 func (controller *UserController) AddPostedUser(c *fiber.Ctx) error {
-	//myform := new(models.Product)
+	// load all products
 	var myform models.User
+	//var convertpass LoginForm
 
 	if err := c.BodyParser(&myform); err != nil {
-		return c.Redirect("/profile")
+		return c.Redirect("/login")
 	}
+	//convertpassword, _ := bcrypt.GenerateFromPassword([]byte(convertpass.Password), 10)
+	//sHash := string(convertpassword)
+
+	//myform.Password = sHash
+
 	// save product
 	err := models.CreateUser(controller.Db, &myform)
 	if err != nil {
-		return c.Redirect("/profile")
+		return c.Redirect("/login")
 	}
 	// if succeed
-	return c.Redirect("/profile")
+	return c.Redirect("/login")
 }
 
 // GET /user/productdetail?id=xxx

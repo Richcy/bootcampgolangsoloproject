@@ -1,22 +1,33 @@
 package controllers
 
 import (
+	"rapidtech/shoppingcart/database"
+	"rapidtech/shoppingcart/models"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
+	"golang.org/x/crypto/bcrypt"
+
+	"gorm.io/gorm"
 )
 
 type LoginForm struct {
-	Username string `form:"username" json:"username" validate:"required"`
+	Username string `form:"name" json:"name" validate:"required"`
 	Password string `form:"password" json:"password" validate:"required"`
 }
 
 type AuthController struct {
 	// declare variables
 	store *session.Store
+	Db    *gorm.DB
 }
 
 func InitAuthController(s *session.Store) *AuthController {
-	return &AuthController{store: s}
+
+	db := database.InitDb()
+	// gorm
+	db.AutoMigrate(&models.User{})
+	return &AuthController{Db: db, store: s}
 }
 
 // get /login
@@ -26,26 +37,37 @@ func (controller *AuthController) Login(c *fiber.Ctx) error {
 	})
 }
 
-// post /login
+// POST /login
 func (controller *AuthController) LoginPosted(c *fiber.Ctx) error {
+	// load all products
+
 	sess, err := controller.store.Get(c)
 	if err != nil {
 		panic(err)
 	}
-	var myform LoginForm
 
+	var user models.User
+	var myform LoginForm
 	if err := c.BodyParser(&myform); err != nil {
 		return c.Redirect("/login")
 	}
+
+	er := models.FindByUsername(controller.Db, &user, myform.Username)
+	if er != nil {
+		return c.Redirect("/login") // http 500 internal server error
+	}
+
 	// hardcode auth
-	if myform.Username == "admin" && myform.Password == "1234" {
-		sess.Set("username", "admin")
+	mycompare := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(myform.Password))
+	if mycompare != nil {
+		sess.Set("username", user.Name)
+		sess.Set("userID", user.Id)
 		sess.Save()
 
 		return c.Redirect("/profile")
 	}
-
 	return c.Redirect("/login")
+
 }
 
 // /profile
