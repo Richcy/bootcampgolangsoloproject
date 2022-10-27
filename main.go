@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html"
 
+	apicontrollers "rapidtech/shoppingcart/apicontrollers"
 	"rapidtech/shoppingcart/controllers"
 )
 
@@ -28,6 +29,17 @@ func main() {
 	authController := controllers.InitAuthController(store)
 	userController := controllers.InitUserController()
 	cartController := controllers.InitCartController()
+	apiprodController := apicontrollers.InitProductController()
+
+	apiprod := app.Group("/api/products")
+	apiprod.Get("/", apiprodController.IndexProduct)
+	apiprod.Get("/create", apiprodController.AddProduct)
+	apiprod.Post("/create", apiprodController.AddPostedProduct)
+	//apiprod.Get("/productdetail", apiprodController.GetDetailProduct)
+	apiprod.Get("/detail/:id", apiprodController.GetDetailProduct2)
+	apiprod.Get("/editproduct/:id", apiprodController.EditProduct)
+	apiprod.Post("/editproduct/:id", apiprodController.EditPostedProduct)
+	apiprod.Delete("/deleteproduct/:id", apiprodController.DeleteProduct)
 
 	p := app.Group("/greetings")
 	p.Get("/", helloController.Greeting)
