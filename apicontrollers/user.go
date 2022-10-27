@@ -8,6 +8,8 @@ import (
 
 	"rapidtech/shoppingcart/database"
 	"rapidtech/shoppingcart/models"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // type ProductForm struct {
@@ -51,15 +53,15 @@ func (controller *UserController) AddUser(c *fiber.Ctx) error {
 func (controller *UserController) AddPostedUser(c *fiber.Ctx) error {
 	// load all user
 	var myform models.User
-	//var convertpass LoginForm
+	var convertpass LoginForm
 
 	if err := c.BodyParser(&myform); err != nil {
 		return c.SendStatus(500)
 	}
-	//convertpassword, _ := bcrypt.GenerateFromPassword([]byte(convertpass.Password), 10)
-	//sHash := string(convertpassword)
+	convertpassword, _ := bcrypt.GenerateFromPassword([]byte(convertpass.Password), 10)
+	sHash := string(convertpassword)
 
-	//myform.Password = sHash
+	myform.Password = sHash
 
 	// save user
 	err := models.CreateUser(controller.Db, &myform)

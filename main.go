@@ -31,6 +31,7 @@ func main() {
 	cartController := controllers.InitCartController()
 	apiprodController := apicontrollers.InitProductController()
 	apiuserController := apicontrollers.InitUserController()
+	apiauthController := apicontrollers.InitAuthController(store)
 
 	apiprod := app.Group("/api/products")
 	apiprod.Get("/", apiprodController.IndexProduct)
@@ -51,6 +52,11 @@ func main() {
 	//apiuser.Get("/editproduct/:id", apiuserController.EditProduct)
 	//apiuser.Post("/editproduct/:id", apiuserController.EditPostedProduct)
 	apiuser.Delete("/deleteuser/:id", apiuserController.DeleteUser)
+
+	app.Get("/login", apiauthController.Login)
+	app.Post("/login", apiauthController.LoginPosted)
+	app.Get("/logout", apiauthController.Logout)
+	app.Post("/register", apiauthController.Register)
 
 	p := app.Group("/greetings")
 	p.Get("/", helloController.Greeting)
