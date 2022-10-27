@@ -46,12 +46,12 @@ func main() {
 
 	cart := app.Group("/carts")
 	cart.Get("/", cartController.IndexCart)
-	//cart.Get("/create", cartController.AddProduct)
-	//cart.Post("/create", cartController.AddPostedProduct)
+	cart.Get("/addcart/:id", cartController.AddCart)
+	cart.Post("/addcart/:id", cartController.AddPostedCart)
 	//cart.Get("/productdetail", prodController.GetDetailProduct)
 	//cart.Get("/detail/:id", prodController.GetDetailProduct2)
-	cart.Get("/editcart/:id", cartController.EditCart)
-	cart.Post("/editcart/:id", cartController.EditPostedCart)
+	//cart.Get("/editcart/:id", cartController.EditCart)
+	//cart.Post("/editcart/:id", cartController.EditPostedCart)
 	cart.Get("/deletecart/:id", cartController.DeleteCart)
 
 	user := app.Group("/users")

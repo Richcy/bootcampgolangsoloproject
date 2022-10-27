@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,53 +44,40 @@ func (controller *CartController) IndexCart(c *fiber.Ctx) error {
 	})
 }
 
-/*
 // GET /products/create
-func (controller *ProductController) AddProduct(c *fiber.Ctx) error {
-	return c.Render("addproduct", fiber.Map{
-		"Title": "Tambah Produk",
+func (controller *CartController) AddCart(c *fiber.Ctx) error {
+	id := c.Params("id")
+	idn, _ := strconv.Atoi(id)
+	product := models.Product{}
+	models.ReadProductById(controller.Db, &product, idn)
+	fmt.Println(product)
+	listproduk := []models.Product{}
+	listproduk = append(listproduk, product)
+	return c.Render("cart", fiber.Map{
+		"Title": "Cart",
+		"Carts": listproduk,
 	})
 }
-*/
-/*
+
 // POST /products/create
-func (controller *ProductController) AddPostedProduct(c *fiber.Ctx) error {
+func (controller *CartController) AddPostedCart(c *fiber.Ctx) error {
 	//myform := new(models.Product)
-	var myform models.Product
+	var myform models.Cart
 
 	if err := c.BodyParser(&myform); err != nil {
 		return c.Redirect("/products")
 	}
 	// save product
 
-	if form, err := c.MultipartForm(); err == nil {
-		// => *multipart.Form
-
-		// Get all files from "documents" key:
-		files := form.File["image"]
-		// => []*multipart.FileHeader
-
-		// Loop through files:
-		for _, file := range files {
-			fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
-
-			// Save the files to disk:
-			if err := c.SaveFile(file, fmt.Sprintf("./public/images/%s", (file.Filename))); err != nil {
-				return err
-			}
-			//return c.SendString("Succeed.. " + (exp + file.Filename))
-			myform.Image = (file.Filename)
-		}
-		//return err
-	}
-	err := models.CreateProduct(controller.Db, &myform)
+	err := models.CreateCart(controller.Db, &myform)
 	if err != nil {
 		return c.Redirect("/products")
 	}
 	// if succeed
-	return c.Redirect("/products")
+	return c.Redirect("/carts")
 }
 
+/*
 
 // GET /products/productdetail?id=xxx
 func (controller *ProductController) GetDetailProduct(c *fiber.Ctx) error {
@@ -125,6 +113,7 @@ func (controller *ProductController) GetDetailProduct2(c *fiber.Ctx) error {
 */
 
 // / GET products/editproduct/xx
+/*
 func (controller *CartController) EditCart(c *fiber.Ctx) error {
 	id := c.Params("id")
 	idn, _ := strconv.Atoi(id)
@@ -139,6 +128,7 @@ func (controller *CartController) EditCart(c *fiber.Ctx) error {
 		"Cart":  cart,
 	})
 }
+
 
 // / POST products/editproduct/xx
 func (controller *CartController) EditPostedCart(c *fiber.Ctx) error {
@@ -164,7 +154,7 @@ func (controller *CartController) EditPostedCart(c *fiber.Ctx) error {
 	return c.Redirect("/products")
 
 }
-
+*/
 // / GET /products/deleteproduct/xx
 func (controller *CartController) DeleteCart(c *fiber.Ctx) error {
 	id := c.Params("id")
