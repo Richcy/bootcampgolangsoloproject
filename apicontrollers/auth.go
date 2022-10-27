@@ -30,6 +30,29 @@ func InitAuthController(s *session.Store) *AuthController {
 	return &AuthController{Db: db, store: s}
 }
 
+// POST /register
+func (controller *AuthController) Register(c *fiber.Ctx) error {
+	// load all user
+	var myform models.User
+	var convertpass LoginForm
+
+	if err := c.BodyParser(&myform); err != nil {
+		return c.SendStatus(500)
+	}
+	convertpassword, _ := bcrypt.GenerateFromPassword([]byte(convertpass.Password), 10)
+	sHash := string(convertpassword)
+
+	myform.Password = sHash
+
+	// save user
+	err := models.CreateUser(controller.Db, &myform)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+	// if succeed
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": myform})
+}
+
 // get /login
 func (controller *AuthController) Login(c *fiber.Ctx) error {
 	return c.Render("login", fiber.Map{
