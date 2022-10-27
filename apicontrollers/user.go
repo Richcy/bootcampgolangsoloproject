@@ -37,10 +37,7 @@ func (controller *UserController) IndexUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(500) // http 500 internal server error
 	}
-	return c.Render("users", fiber.Map{
-		"Title": "Daftar User",
-		"Users": users,
-	})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": users})
 }
 
 // GET /register
@@ -52,27 +49,28 @@ func (controller *UserController) AddUser(c *fiber.Ctx) error {
 
 // POST /user/create
 func (controller *UserController) AddPostedUser(c *fiber.Ctx) error {
-	// load all products
+	// load all user
 	var myform models.User
 	//var convertpass LoginForm
 
 	if err := c.BodyParser(&myform); err != nil {
-		return c.Redirect("/login")
+		return c.SendStatus(500)
 	}
 	//convertpassword, _ := bcrypt.GenerateFromPassword([]byte(convertpass.Password), 10)
 	//sHash := string(convertpassword)
 
 	//myform.Password = sHash
 
-	// save product
+	// save user
 	err := models.CreateUser(controller.Db, &myform)
 	if err != nil {
-		return c.Redirect("/login")
+		return c.SendStatus(500)
 	}
 	// if succeed
-	return c.Redirect("/login")
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": myform})
 }
 
+/*
 // GET /user/productdetail?id=xxx
 func (controller *UserController) GetDetailUser(c *fiber.Ctx) error {
 	id := c.Query("id")
@@ -83,11 +81,9 @@ func (controller *UserController) GetDetailUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(500) // http 500 internal server error
 	}
-	return c.Render("userdetail", fiber.Map{
-		"Title": "Detail User",
-		"User":  user,
-	})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": user})
 }
+*/
 
 // GET /user/detail/xxx
 func (controller *UserController) GetDetailUser2(c *fiber.Ctx) error {
@@ -99,10 +95,7 @@ func (controller *UserController) GetDetailUser2(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(500) // http 500 internal server error
 	}
-	return c.Render("userdetail", fiber.Map{
-		"Title": "Detail User",
-		"User":  user,
-	})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": user})
 }
 
 /*
@@ -155,5 +148,5 @@ func (controller *UserController) DeleteUser(c *fiber.Ctx) error {
 
 	var user models.User
 	models.DeleteUserById(controller.Db, &user, idn)
-	return c.Redirect("/users")
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "success ok"})
 }

@@ -86,6 +86,7 @@ func (controller *ProductController) AddPostedProduct(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": myform})
 }
 
+/*
 // GET /products/productdetail?id=xxx
 func (controller *ProductController) GetDetailProduct(c *fiber.Ctx) error {
 	id := c.Query("id")
@@ -98,6 +99,7 @@ func (controller *ProductController) GetDetailProduct(c *fiber.Ctx) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": product})
 }
+*/
 
 // GET /products/detail/xxx
 func (controller *ProductController) GetDetailProduct2(c *fiber.Ctx) error {
