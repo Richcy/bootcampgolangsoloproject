@@ -8,6 +8,14 @@
 		<input type="text" class="form-control" value="{{.Product.Name}}" name="name" id="name" placeholder="Nama">
 	</div>
 	<div class="mb-3">
+		<label for="desc" class="form-label">Deskripsi</label>
+		<input type="text" class="form-control" value="{{.Product.Deskripsi}}" name="desc" id="desc" placeholder="Nama">
+	</div>
+	<div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" class="form-control" value="{{.Product.Image}}" id="image" name="image" placeholder="image">
+    </div>
+	<div class="mb-3">
 		<label for="name" class="form-label">Quantity</label>
 		<input type="number" class="form-control" value="{{.Product.Quantity}}" name="quantity" id="quantity" placeholder="quantity">
 	</div>

@@ -1,8 +1,8 @@
 {{template "partials/header" .}}
 
-<h1>Daftar Produk</h1>
+<h1>Cart</h1>
 <br>
-<a href="/products/create" class="btn btn-primary">Tambah Produk</a>
+<a href="/products/" class="btn btn-primary">Kembali</a>
 <div>
 	<table class="table table-striped">
 		<thead>
@@ -17,7 +17,7 @@
 		  </tr>
 		</thead>
 		<tbody>
-			{{range .Products}}
+			{{range .Carts}}
 			<tr>
 				<th scope="row">{{.Id}}</th>
 				<td>{{.Name}}</td>
@@ -26,13 +26,7 @@
 				<td>{{.Quantity}}</td>
 				<td>{{.Price}}</td>
 				<td>
-					<a href="/products/productdetail?id={{.Id}}" class="btn btn-outline-info">
-						Detail</a>
-					&nbsp;
-					<a href="/carts/addcart?id={{.Id}}" class="btn btn-outline-info">
-						Beli</a>
-					<!--<a href="/products/detail/{{.Id}}" class="btn btn-outline-info">
-							Detail 2</a>-->
+					<a href="/carts/deletecart/{{.Cart.Id}}" class="btn btn-danger">Hapus</a>
 				</td>
 			</tr>
 		  {{end}}
