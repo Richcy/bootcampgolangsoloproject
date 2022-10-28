@@ -32,6 +32,8 @@ func main() {
 	apiprodController := apicontrollers.InitProductController()
 	apiuserController := apicontrollers.InitUserController()
 	apiauthController := apicontrollers.InitAuthController()
+	apicartController := apicontrollers.InitCartController()
+	apitransactionController := apicontrollers.InitTransactionController()
 
 	apiprod := app.Group("/api/products")
 	apiprod.Get("/", apiprodController.IndexProduct)
@@ -40,8 +42,9 @@ func main() {
 	//apiprod.Get("/productdetail", apiprodController.GetDetailProduct)
 	apiprod.Get("/detail/:id", apiprodController.GetDetailProduct2)
 	apiprod.Get("/editproduct/:id", apiprodController.EditProduct)
-	apiprod.Post("/editproduct/:id", apiprodController.EditPostedProduct)
+	apiprod.Put("/editproduct/:id", apiprodController.EditPostedProduct)
 	apiprod.Delete("/deleteproduct/:id", apiprodController.DeleteProduct)
+	apiprod.Post("/addcart/:id", apicartController.AddPostedCart)
 
 	apiuser := app.Group("/api/users")
 	apiuser.Get("/", apiuserController.IndexUser)
@@ -57,6 +60,18 @@ func main() {
 	app.Post("/api/login", apiauthController.LoginPosted)
 	//app.Get("/logout", apiauthController.Logout)
 	app.Post("/api/register", apiauthController.Register)
+
+	apicart := app.Group("/api/carts")
+	apicart.Get("/", apicartController.IndexCart)
+	//apicart.Get("/addcart/:id", apicartController.AddPostedCart)
+	//apicart.Post("/addcart/:id", apicartController.AddPostedCart)
+	apicart.Delete("/deleteproduct/:id", apicartController.DeleteCartById)
+	apicart.Delete("/deletecart", apicartController.DeleteCart)
+	apicart.Post("/checkout/:id", apicartController.Checkout)
+
+	apitrans := app.Group("/transactions")
+	apitrans.Get("/", apitransactionController.IndexTransaction)
+	apitrans.Delete("/deletetransaction/:id", apitransactionController.DeleteTransactionById)
 
 	p := app.Group("/greetings")
 	p.Get("/", helloController.Greeting)
@@ -81,7 +96,7 @@ func main() {
 	//cart.Get("/detail/:id", prodController.GetDetailProduct2)
 	//cart.Get("/editcart/:id", cartController.EditCart)
 	//cart.Post("/editcart/:id", cartController.EditPostedCart)
-	cart.Get("/deletecart/:id", cartController.DeleteCart)
+	cart.Get("/deletecart/:id", cartController.DeleteCartById)
 
 	user := app.Group("/users")
 	user.Get("/", userController.IndexUser)

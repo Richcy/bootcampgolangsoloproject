@@ -182,5 +182,7 @@ func (controller *ProductController) DeleteProduct(c *fiber.Ctx) error {
 
 	var product models.Product
 	models.DeleteProductById(controller.Db, &product, idn)
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "success ok"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "product deleted",
+	})
 }

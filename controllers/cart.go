@@ -156,7 +156,7 @@ func (controller *CartController) EditPostedCart(c *fiber.Ctx) error {
 }
 */
 // / GET /products/deleteproduct/xx
-func (controller *CartController) DeleteCart(c *fiber.Ctx) error {
+func (controller *CartController) DeleteCartById(c *fiber.Ctx) error {
 	id := c.Params("id")
 	idn, _ := strconv.Atoi(id)
 

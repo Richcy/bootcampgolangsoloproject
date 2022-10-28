@@ -6,13 +6,12 @@ import (
 
 type Cart struct {
 	gorm.Model
-	Id int `form:"id" json:"id" validate:"required"`
-	//Name      string  `form:"name" json:"name" validate:"required"`
-	//Image     string  `form:"image" json:"image" validate:"required"`
-	//Deskripsi string  `form:"desc" json:"desc" validate:"required"`
+	Id        int     `form:"id" json:"id" validate:"required"`
+	Name      string  `form:"name" json:"name" validate:"required"`
+	Image     string  `form:"image" json:"image" validate:"required"`
+	Deskripsi string  `form:"desc" json:"desc" validate:"required"`
 	Quantity  int     `form:"quantity" json:"quantity" validate:"required"`
 	Price     float32 `form:"price" json:"price" validate:"required"`
-	ProductID int     `form:"productid" json:"productid" validate:"required"`
 }
 
 // CRUD
@@ -44,6 +43,11 @@ func UpdateCart(db *gorm.DB, cart *Cart) (err error) {
 }
 func DeleteCartById(db *gorm.DB, cart *Cart, id int) (err error) {
 	db.Where("id=?", id).Delete(cart)
+
+	return nil
+}
+func DeleteCart(db *gorm.DB, cart *Cart) (err error) {
+	db.Delete(cart)
 
 	return nil
 }

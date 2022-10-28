@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,7 +29,7 @@ func InitCartController() *CartController {
 }
 
 // routing
-// GET /products
+// GET /carts
 func (controller *CartController) IndexCart(c *fiber.Ctx) error {
 	// load all products
 	var carts []models.Cart
@@ -38,13 +37,40 @@ func (controller *CartController) IndexCart(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(500) // http 500 internal server error
 	}
-	return c.Render("carts", fiber.Map{
-		"Title": "Cart",
-		"Carts": carts,
-	})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": carts})
 }
 
-// GET /products/create
+// POST /products/addcart/xx
+func (controller *CartController) AddPostedCart(c *fiber.Ctx) error {
+	//myform := new(models.Product)
+	id := c.Params("id")
+	idn, _ := strconv.Atoi(id)
+	var product models.Product
+	err := models.ReadProductById(controller.Db, &product, idn)
+	if err != nil {
+		return c.SendStatus(500) // http 500 internal server error
+	}
+
+	var myform models.Cart
+
+	if err := c.BodyParser(&myform); err != nil {
+		return c.SendStatus(400)
+	}
+
+	myform.Id = product.Id
+	myform.Name = product.Name
+	myform.Image = product.Image
+	myform.Price = product.Price
+	// save cart
+	errr := models.CreateCart(controller.Db, &myform)
+	if errr != nil {
+		return c.SendStatus(500)
+	}
+	// if succeed
+	return c.JSON(myform)
+}
+
+/*
 func (controller *CartController) AddCart(c *fiber.Ctx) error {
 	id := c.Params("id")
 	idn, _ := strconv.Atoi(id)
@@ -53,28 +79,38 @@ func (controller *CartController) AddCart(c *fiber.Ctx) error {
 	fmt.Println(product)
 	listproduk := []models.Product{}
 	listproduk = append(listproduk, product)
-	return c.Render("cart", fiber.Map{
-		"Title": "Cart",
-		"Carts": listproduk,
-	})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": listproduk})
 }
+*/
 
-// POST /products/create
-func (controller *CartController) AddPostedCart(c *fiber.Ctx) error {
+// POST /carts/checkout/xx
+func (controller *CartController) Checkout(c *fiber.Ctx) error {
 	//myform := new(models.Product)
-	var myform models.Cart
+	id := c.Params("id")
+	idn, _ := strconv.Atoi(id)
+	var cart models.Cart
+	err := models.ReadCartById(controller.Db, &cart, idn)
+	if err != nil {
+		return c.SendStatus(500) // http 500 internal server error
+	}
+
+	var myform models.Transaction
 
 	if err := c.BodyParser(&myform); err != nil {
-		return c.Redirect("/products")
+		return c.SendStatus(400)
 	}
-	// save product
 
-	err := models.CreateCart(controller.Db, &myform)
-	if err != nil {
-		return c.Redirect("/products")
+	myform.Id = cart.Id
+	myform.Name = cart.Name
+	myform.Image = cart.Image
+	myform.Price = cart.Price
+	// add to transaction
+	errr := models.CreateTransaction(controller.Db, &myform)
+	if errr != nil {
+		return c.SendStatus(500)
 	}
 	// if succeed
-	return c.Redirect("/carts")
+	return c.JSON(myform)
 }
 
 /*
@@ -155,12 +191,24 @@ func (controller *CartController) EditPostedCart(c *fiber.Ctx) error {
 
 }
 */
-// / GET /products/deleteproduct/xx
-func (controller *CartController) DeleteCart(c *fiber.Ctx) error {
+// / DELETE /carts/deleteproduct/xx
+func (controller *CartController) DeleteCartById(c *fiber.Ctx) error {
 	id := c.Params("id")
 	idn, _ := strconv.Atoi(id)
 
 	var cart models.Cart
 	models.DeleteCartById(controller.Db, &cart, idn)
-	return c.Redirect("/products")
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "product in cart deleted",
+	})
+}
+
+// / DELETE /carts/deletecart
+func (controller *CartController) DeleteCart(c *fiber.Ctx) error {
+
+	var cart models.Cart
+	models.DeleteCart(controller.Db, &cart)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "cart deleted",
+	})
 }
